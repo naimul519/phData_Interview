@@ -2,12 +2,14 @@ from fastapi import FastAPI, HTTPException
 import pandas as pd
 import joblib
 import json
-from pydantic import BaseModel
+from utils import get_next_version
+#from pydantic import BaseModel
 
 app = FastAPI()
 
 # Load model and demographic data
-model = joblib.load("./model/model.pkl")
+version = get_next_version() # Load the latest version
+model = joblib.load(f"./model/v{version}/model_v{version}.pkl")
 zipcode_data = pd.read_csv("data/zipcode_demographics.csv")
 
 
@@ -43,7 +45,7 @@ def predict(input_data: dict) -> dict:
         prediction = model.predict(model_df)[0]
 
         
-        return {"success": 200, "prediction": prediction}
+        return {"success": 200, "prediction": prediction, "model_version": version}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

@@ -9,6 +9,7 @@ from sklearn import model_selection
 from sklearn import neighbors
 from sklearn import pipeline
 from sklearn import preprocessing
+from utils import get_next_version
 
 SALES_PATH = "data/kc_house_data.csv"  # path to CSV with home sale data
 DEMOGRAPHICS_PATH = "data/zipcode_demographics.csv"  # path to CSV with demographics
@@ -65,8 +66,15 @@ def main():
     output_dir = pathlib.Path(OUTPUT_DIR)
     output_dir.mkdir(exist_ok=True)
 
+    version = get_next_version()
+    model_filename = f"model_v{version}.pkl"
+    output_dir = pathlib.Path(f"model/v{version}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    print(f"Saving model to: {model_filename}")
+    print(f"Saving model artifacts to: {output_dir}")
+
     # Output model artifacts: pickled model and JSON list of features
-    pickle.dump(model, open(output_dir / "model.pkl", 'wb'))
+    pickle.dump(model, open(output_dir / model_filename, 'wb'))
     json.dump(list(x_train.columns),
               open(output_dir / "model_features.json", 'w'))
 
