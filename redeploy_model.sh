@@ -25,15 +25,6 @@ CONTAINER_NAME="${CONTAINER}-v${LATEST_VERSION}"
 
 echo "Starting model redeployment process..."
 
-# 1️⃣ Stop any running containers for this image
-RUNNING_CONTAINER=$(docker ps -q --filter "name=$CONTAINER_NAME")
-
-if [ -n "$RUNNING_CONTAINER" ]; then
-  echo "🛑 Stopping running container: $RUNNING_CONTAINER"
-  docker stop "$RUNNING_CONTAINER"
-else
-  echo "✅ No running container found for $RUNNING_CONTAINER"
-fi
 
 # 2️⃣ Build new image (assumes Dockerfile in current directory)
 echo "🔨 Building new Docker image: $IMAGE_NAME"

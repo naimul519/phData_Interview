@@ -35,16 +35,11 @@ def predict(input_data: dict) -> dict:
         input_df['zipcode'] = input_df['zipcode'].astype(str)
         zipcode_data['zipcode'] = zipcode_data['zipcode'].astype(str)
 
-
         fe_df = input_df.merge(zipcode_data, on="zipcode", how="left")
-
         model_df = fe_df[model_features]
 
-        
-        
         prediction = model.predict(model_df)[0]
 
-        
         return {"success": 200, "prediction": prediction, "model_version": version}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
