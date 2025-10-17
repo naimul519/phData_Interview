@@ -32,11 +32,12 @@ docker build -t "$IMAGE_NAME" .
 
 # 3️⃣ Run new container
 echo "🚢 Starting new container..."
-docker run -d -p 8000:8000 --name "$CONTAINER_NAME" "$IMAGE_NAME"
+docker run -d -p 8001:8000 --name "$CONTAINER_NAME" "$IMAGE_NAME"
 docker start "$CONTAINER_NAME"
 
 # 4️⃣ Verify it's running
 echo "🔍 Checking running containers..."
 docker ps | grep "$CONTAINER_NAME"
+docker start "$CONTAINER_NAME"
 
 echo "Redeployment complete. API should be live at http://127.0.0.1:8000"

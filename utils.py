@@ -1,28 +1,29 @@
 import os
 import re
 
-def get_next_version(model_dir="model"):
-    """
-    Find the next available model version automatically.
-    Looks for subfolders like v1/, v2/, etc.
-    Each folder contains its model file (e.g., model/v1/model_v1.pkl)
-    """
-    os.makedirs(model_dir, exist_ok=True)  # Ensure base folder exists
+def find_latest_model_version(model_dir: str = "./model") -> int:
+    """Scans the model directory to find the latest version number."""
+    if not os.path.exists(model_dir):
+        return 0  # Or raise an error if no model dir exists
+    
+    # Find all subdirectories matching the pattern 'v' followed by digits (e.g., v1, v2)
+    version_dirs = [d for d in os.listdir(model_dir) if os.path.isdir(os.path.join(model_dir, d)) and re.match(r'^v\d+$', d)]
+    
+    if not version_dirs:
+        return 0 # No versioned models found
 
-    # List all subfolders inside the model directory
-    subdirs = [d for d in os.listdir(model_dir) if os.path.isdir(os.path.join(model_dir, d))]
-    versions = []
+    # Extract the numbers and find the max
+    versions = [int(d[1:]) for d in version_dirs]
+    return max(versions)
 
-    for d in subdirs:
-        match = re.match(r"v(\d+)$", d)  # Match folder names like v1, v2, v10
-        if match:
-            versions.append(int(match.group(1)))
-
-    # Determine next version number
-    next_version = max(versions) + 1 if versions else 1
-
-    # Create the new version folder (optional)
-    new_version_dir = os.path.join(model_dir, f"v{next_version}")
-    os.makedirs(new_version_dir, exist_ok=True)
-
-    return next_version
+def get_next_version(model_dir: str = "model") -> int:
+    """Finds the latest version and returns the next version number."""
+    if not os.path.exists(model_dir):
+        return 1 # Start with version 1 if the directory doesn't exist
+    
+    version_dirs = [d for d in os.listdir(model_dir) if d.startswith('v')]
+    if not version_dirs:
+        return 1 # Start with version 1 if no version subdirectories exist
+    
+    latest_version = max([int(d[1:]) for d in version_dirs])
+    return latest_version + 1

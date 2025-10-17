@@ -2,13 +2,12 @@ from fastapi import FastAPI, HTTPException
 import pandas as pd
 import joblib
 import json
-from utils import get_next_version
-#from pydantic import BaseModel
+from utils import get_next_version, find_latest_model_version
 
 app = FastAPI()
 
 # Load model and demographic data
-version = get_next_version() # Load the latest version
+version = find_latest_model_version() # Load the latest version
 model = joblib.load(f"./model/v{version}/model_v{version}.pkl")
 zipcode_data = pd.read_csv("data/zipcode_demographics.csv")
 
